@@ -1,0 +1,16 @@
+{
+    "parser": "babel-eslint",
+    "plugins": [
+        //"react"
+    ],
+    //"extends": ["eslint:recommended",".eslintrc-meteor"],
+    "extends":["airbnb"],
+    "env": {},
+    "rules": {
+
+        /**
+          * BoxHeader Specific Overrides
+          */
+
+    }
+}
