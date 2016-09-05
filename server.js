@@ -7,7 +7,13 @@ import esl from  'modesl';
 const Server = new esl.Server({port: 8085, myevents: true}, function () {
   console.log("esl Server is up");
 });
+Server.on('connection::open',function (conn,id) {
+  console.log(`connection is opened:${id}`);
+})
 
+Server.on('connection::close',function (conn,id) {
+  console.log(`connection is closed:${id}`);
+  })
 Server.on('connection::ready', function (conn, id) {
   console.log('new call ' + id);
   conn.call_start = new Date().getTime();
