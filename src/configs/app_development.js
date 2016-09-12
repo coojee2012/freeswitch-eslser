@@ -1,7 +1,7 @@
 /**
  * Created by linyong on 16/5/31.
  */
-module.exports = {
+export default {
   // api server listening IP
   host: "0.0.0.0",
   // api server listening port
@@ -21,7 +21,7 @@ module.exports = {
   },
   mongos: {
     //uris: "mongodb://test:test@192.168.2.220:28017,192.168.2.220:28018,192.168.2.220:28019/test",
-    uris:"mongodb://test:test@127.0.0.1:27017/test",
+    uris: "mongodb://test:test@127.0.0.1:27017/test",
     /**
      * db      - passed to the connection db instance
      * server  - passed to the connection server instance(s)
