@@ -31,8 +31,9 @@
     "babel-register": "^6.8.0",
     "babel-root-slash-import": "^1.x.x",
     "modesl": "^1.1.8",
-    "xml2js": "~0.4",
-    "node-uuid": "~1.4"
+    "mongoose": "^4.6.0",
+    "node-uuid": "~1.4",
+    "xml2js": "~0.4"
   },
   "devDependencies": {
     "chai": "3.x.x",
@@ -54,7 +55,6 @@
     "node": ">= 4.4.4"
   },
   "config": {
-    "blanket": {
-    }
+    "blanket": {}
   }
 }
