@@ -12,6 +12,7 @@ import ESLRoute from './route';
 class ESLServer {
   constructor() {
     this.server = null;
+    this.fsc = null;
     this.dbConnection = null;
     this.dbModels = null;
     this.config = conf;
@@ -55,6 +56,10 @@ class ESLServer {
 
   }
 
+  /**
+   * 启动esl server
+   * @returns {Promise}
+   */
   startServer() {
     const _this = this;
     return new Promise((resolve, reject) => {
@@ -78,12 +83,19 @@ class ESLServer {
       })
       Server.on('connection::ready', (conn, id) => {
         console.log('new call ' + id);
+       // console.log('new conn',conn);
+        
+       
         const call_start = new Date().getTime();
         const eslRouter = new ESLRoute({
           DBModels: _this.dbModels,
           conn,
           callId: id
         });
+
+        const {fsHost,fsHostName,fsName} = eslRouter.getFSInfo() || {};
+        console.log('ddd',{fsHost,fsHostName,fsName});
+        // TODO 根据fsHost和fsName新建fsClient 需要socket的负载均衡
 
 
         const WriteCDR = () => {
@@ -132,6 +144,7 @@ class ESLServer {
     });
   }
 
+ 
 
   run() {
     const _this = this;
