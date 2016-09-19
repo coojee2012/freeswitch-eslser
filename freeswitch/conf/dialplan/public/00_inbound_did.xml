@@ -1,6 +1,6 @@
 <include>
   <extension name="public_did">
-    <condition field="destination_number" expression="^(5551212)$">
+    <condition field="destination_number" expression="^(53573074)$">
       <!--
 	  If you're hosting multiple domains you will want to set the
 	  target_domain on these calls so they hit the proper domain after you
@@ -11,8 +11,9 @@
 
       --> 
       <action application="set" data="domain_name=$${domain}"/>
+      <action application="socket" data="127.0.0.1:8085 async full"/>
       <!-- This example maps the DID 5551212 to ring 1000 in the default context -->
-      <action application="transfer" data="1000 XML default"/>
+<!--      <action application="transfer" data="1000 XML default"/>-->
     </condition>
   </extension>
 </include>

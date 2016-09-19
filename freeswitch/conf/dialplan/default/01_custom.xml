@@ -1,0 +1,7 @@
+<include>
+    <extension name="test-line-outbound">
+        <condition field="destination_number" expression="^9(0{0,1}1\d{10})$">
+            <action application="bridge" data="sofia/gateway/testLine/$1"/>
+        </condition>
+    </extension>
+</include>
