@@ -1,14 +1,22 @@
 /**
  * Created by linyong on 9/12/16.
  */
+import {CreateCDRRecord, UpdateCDRRecord} from './CDRManage';
+import GetRouters from './GetRouter';
 class ESLRoute {
-  constructor({DBModels, conn, callId}) {
+  constructor({logger, DBModels, conn, callId}) {
     this.DBModels = DBModels;
+    this.logger = logger;
     this.conn = conn;
     this.callId = callId;
 
     this.fsInfo = null;
     this.uuid = null;
+
+
+    this.CreateCDRRecord = CreateCDRRecord.bind(this);
+    this.UpdateCDRRecord = UpdateCDRRecord.bind(this);
+    this.GetRouters = GetRouters.bind(this);
     this.init();
   }
 
@@ -18,17 +26,43 @@ class ESLRoute {
     chanData.map((item, index) => {
       ChannelData[item.name] = item.value;
     });
-    const direction = ChannelData['Channel-Direction'];
-    const destinationNumber = ChannelData['Channel-Destination-Number'];
-    const ani = ChannelData['Channel-ANI'];
+
 
     const fsHost = ChannelData['FreeSWITCH-IPv4'];
     const fsHostName = ChannelData['FreeSWITCH-Hostname'];
     const fsName = ChannelData['FreeSWITCH-Switchname'];
+    const {
+        'Channel-Source':channelSource,
+        'Channel-Destination-Number':destinationNumber,
+        'Channel-Channel-Name':channelName,
+        'Channel-Direction':channelDirection,
+        'Channel-ANI':ani,
+        variable_channel_name:userChannel,
+        variable_accountcode:accountCode,
+        variable_effective_caller_id_number:callerId,
+        variable_effective_caller_id_name:callerName,
+        variable_direction:direction,
+        variable_domain_name:domainName,
+        variable_user_context:userContext,
+        variable_user_name:userNmae,
+    } = ChannelData;
 
 
     this.fsInfo = {fsHost, fsHostName, fsName};
     this.uuid = ChannelData['Channel-Unique-ID'];
+  }
+
+  route() {
+    const _this = this;
+    return new Promise((resolve, reject) => {
+      CreateCDRRecord()
+          .then(() => {
+            return _this.GetRouters();
+          })
+          .catch(err => {
+            _this.logger.error(['ESL', 'route'], err);
+          })
+    });
   }
 
   getFSInfo() {
@@ -171,7 +205,7 @@ class ESLRoute {
   uuid_transfer(exten) {
     const _this = this;
     return new Promise((resolve, reject) => {
-      _this.conn.api('uuid_transfer', [_this.uuid, '-both', `${exten}`,'xml','default'], (evt)=> {
+      _this.conn.api('uuid_transfer', [_this.uuid, '-both', `${exten}`, 'xml', 'default'], (evt)=> {
         console.log('uuid_transfer:', evt);
         resolve(evt);
       });

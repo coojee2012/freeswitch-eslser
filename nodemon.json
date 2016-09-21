@@ -1,0 +1,19 @@
+{
+  "verbose": true,
+  "ignore": [
+      "*.test.js",
+      "www/*",
+      "public/*",
+      ".git",
+      ".idea",
+      "node_modules/**/node_modules"
+  ],
+  "execMap": {
+      "rb": "ruby",
+      "pde": "processing --sketch={{pwd}} --run"
+    },
+  "env": {
+          "NODE_ENV": "development"
+            },
+  "ext": "js json"
+}
