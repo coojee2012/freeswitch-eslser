@@ -20,13 +20,13 @@ fs.readdirSync('node_modules')
 module.exports = {
   entry: {
     bundle: [
-      './src/server.js',
+      './src/Server.js',
     ]
   },
   target: 'node',// tells webpack not to touch any built-in modules like fs or path.
   output: {
     path: './build',
-    filename: 'server.min.js',
+    filename: 'Server.min.js',
   },
   externals: nodeModules,
   resolve: {

@@ -1,3 +1,4 @@
+/* @flow */
 /**
  * Created by linyong on 9/2/16.
  */
@@ -12,6 +13,8 @@ import ESLRoute from './route';
 
 
 class ESLServer {
+  test:string;
+  y:number;
   constructor() {
     this.server = null;
     this.fsc = null;
@@ -29,7 +32,7 @@ class ESLServer {
   }
 
   connRedisDB() {
-    const _this = this;
+    const _this:ESLServer = this;
     const inital = (tag, options) => {
       return new Promise((resolve, reject) => {
         const client = redis.createClient(options);

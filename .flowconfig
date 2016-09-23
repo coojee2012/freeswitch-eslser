@@ -1,0 +1,9 @@
+[ignore]
+build
+[include]
+
+[libs]
+node_modules/iflow-lodash/index.js.flow
+src/interfaces/
+[options]
+esproposal.class_static_fields=enable

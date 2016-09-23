@@ -9,8 +9,8 @@ var APIServer = require("../src/APISrv").default;
 var Runner = require("../src/ClusterRun").default;
 var ccServer = new CCServer();
 var apiServer = new APIServer();
-new Runner([ccServer,apiServer]).run();
+//new Runner([ccServer,apiServer]).run();
 
 
-//ccServer.run();
-//apiServer.run();
+ccServer.run();
+apiServer.run();

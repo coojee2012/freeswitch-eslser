@@ -47,9 +47,11 @@
     "xml2js": "~0.4"
   },
   "devDependencies": {
+    "babel-plugin-transform-flow-strip-types": "^6.14.0",
     "chai": "3.x.x",
     "enzyme": "^2.0.0",
     "eslint": "2.9.x",
+    "flow-bin": "^0.32.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.0.0",
     "gulp-clean": "^0.3.1",
@@ -57,7 +59,10 @@
     "gulp-eslint": "^2.0.0",
     "gulp-sourcemaps": "~1.6.0",
     "gulp-uglify": "^1.4.2",
-    "gulp-util": "^3.0.7"
+    "gulp-util": "^3.0.7",
+    "iflow-lodash": "^1.1.24",
+    "iflow-moment": "^1.1.13",
+    "webpack": "^1.13.2"
   },
   "scripts": {
     "test": "gulp test"
