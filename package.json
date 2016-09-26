@@ -40,6 +40,7 @@
     "hapi-redis": "^6.0.0",
     "inert": "^4.0.2",
     "modesl": "^1.1.8",
+    "mongodb": "^2.2.10",
     "mongoose": "^4.6.0",
     "node-uuid": "~1.4",
     "redis": "^2.6.2",
