@@ -1,5 +1,5 @@
-/* @flow */
 /**
+ * @flow
  * Created by linyong on 9/2/16.
  */
 import winston from 'winston';
@@ -13,8 +13,17 @@ import ESLRoute from './CallFlow';
 
 
 class ESLServer {
-  test:string;
-  y:number;
+  server:any;
+  fsc:any;
+  dbConnection:any;
+  dbModels:any;
+  config:any;
+  redisClient:any;
+  redisPub:any;
+  redisSub:any;
+  logger:any;
+
+
   constructor() {
     this.server = null;
     this.fsc = null;
@@ -26,12 +35,12 @@ class ESLServer {
     this.redisSub = null;
     this.logger = null;
 
-    this.connMongoDB = this.connMongoDB.bind(this);
-    this.startServer = this.startServer.bind(this);
-    this.run = this.run.bind(this);
+ // this.connMongoDB = this.connMongoDB.bind(this);
+ // this.startServer = this.startServer.bind(this);
+ // this.run = this.run.bind(this);
   }
 
-  connRedisDB() {
+  connRedisDB():Promise<A> {
     const _this:ESLServer = this;
     const inital = (tag, options) => {
       return new Promise((resolve, reject) => {
@@ -65,7 +74,7 @@ class ESLServer {
     }
     return new Promise((resolve, reject) => {
       const options = _this.config.redis;
-      Promise.all([inital('client',options), inital('pub',options), inital('sub',options)]).then(data => {
+      Promise.all([inital('client', options), inital('pub', options), inital('sub', options)]).then(data => {
         _this.redisClient = data[0];
         _this.redisPub = data[1];
         _this.redisSub = data[2];
@@ -76,7 +85,7 @@ class ESLServer {
     })
   }
 
-  RedisPromise(command, ...args) {
+  RedisPromise(command, ...args){
     const _this = this;
     return new Promise((resolve, reject) => {
       _this.redisClient[command](...args, (err, res)=> {
@@ -85,7 +94,7 @@ class ESLServer {
     });
   }
 
-  connMongoDB() {
+  connMongoDB():Promise {
     const _this = this;
     const {uris, opts} = _this.config.mongos;
     const dbConnection = _this.dbConnection = Mongoose.createConnection(uris, opts);
@@ -93,26 +102,26 @@ class ESLServer {
 
     return new Promise((resolve, reject)=> {
       dbConnection.on('error', (error) => {
-        _this.logger.error(['ESL','mongo-models'], error);
+        _this.logger.error(['ESL', 'mongo-models'], error);
         reject(error);
       });
       dbConnection.once('open', () => {
-        _this.logger.info(['ESL','mongo-models'], "DB Connected!");
+        _this.logger.info(['ESL', 'mongo-models'], "DB Connected!");
         Object.keys(DBModules).map(key => {
           mongoModels[key] = dbConnection.model(key, DBModules[key]);
         });
         resolve();
       });
       dbConnection.on("reconnected", () => {
-        _this.logger.warn(['ESL','mongo-models'], "DB Reconnected!");
+        _this.logger.warn(['ESL', 'mongo-models'], "DB Reconnected!");
       });
 
       dbConnection.on("disconnected", () => {
-        _this.logger.warn(['ESL','mongo-models'], 'DB Disconnected!');
+        _this.logger.warn(['ESL', 'mongo-models'], 'DB Disconnected!');
       });
 
       dbConnection.on("close", () => {
-        _this.logger.info(['ESL','mongo-models'], 'DB Closed!');
+        _this.logger.info(['ESL', 'mongo-models'], 'DB Closed!');
       });
     })
 
@@ -122,21 +131,21 @@ class ESLServer {
    * 启动esl server
    * @returns {Promise}
    */
-  startServer() {
+  startServer():number {
     const _this = this;
     return new Promise((resolve, reject) => {
       const Server = _this.server = new esl.Server(
-          {
-            port: _this.config.ccPort,
-            myevents: ''//首次执行的事件名
-          }, (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              _this.logger.info("esl Server is up");
-              resolve();
-            }
-          });
+        {
+          port: _this.config.ccPort,
+          myevents: ''//首次执行的事件名
+        }, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            _this.logger.info("esl Server is up");
+            resolve();
+          }
+        });
       Server.on('connection::open', (conn, id) => {
         _this.logger.info(`connection is opened:${id}`);
       })
@@ -150,7 +159,7 @@ class ESLServer {
 
         const call_start = new Date().getTime();
         const eslRouter = new ESLRoute({
-          logger:_this.logger,
+          logger: _this.logger,
           DBModels: _this.dbModels,
           conn,
           callId: id
@@ -176,22 +185,22 @@ class ESLServer {
         const DialIvr = (ivrnumber) => {
           return new Promise((resolve, reject) => {
             eslRouter.answer()
-                .then(()=> {
-                  return eslRouter.play_and_get_digits({});
-                })
+              .then(()=> {
+                return eslRouter.play_and_get_digits({});
+              })
           });
         }
 
         WriteCDR()
-            .then(()=> {
-              return GetRouter();
-            })
-            .then(()=> {
-              return DialIvr(200)
-            })
-            .catch(err=> {
-              _this.logger.info('eeee', err);
-            })
+          .then(()=> {
+            return GetRouter();
+          })
+          .then(()=> {
+            return DialIvr(200)
+          })
+          .catch(err=> {
+            _this.logger.info('eeee', err);
+          })
 
         /*        conn.execute('echo', (evt) => {
          _this.logger.info('echoing', Object.keys(evt));
@@ -211,28 +220,28 @@ class ESLServer {
   run() {
     const _this = this;
     GetConfig().then(conf=> {
-          _this.config = conf;
-          _this.logger = new (winston.Logger)({
-            levels: conf.logLevel.levels,
-            transports: [
-              //new FluentTransport(`${tag_prefix}.${topic}`, config),
-              new (winston.transports.Console)()
-            ]
-          });
-          return _this.connRedisDB();
-        })
-        .then(()=> {
-          return _this.connMongoDB();
-        })
-        .then(()=> {
-          return _this.startServer();
-        })
-        .then(()=> {
+      _this.config = conf;
+      _this.logger = new (winston.Logger)({
+        levels: conf.logLevel.levels,
+        transports: [
+          //new FluentTransport(`${tag_prefix}.${topic}`, config),
+          new (winston.transports.Console)()
+        ]
+      });
+      return _this.connRedisDB();
+    })
+      .then(()=> {
+        return _this.connMongoDB();
+      })
+      .then(()=> {
+        return _this.startServer();
+      })
+      .then(()=> {
 
-        })
-        .catch(err=> {
-          _this.logger.info(`start server error:${err}`);
-        })
+      })
+      .catch(err=> {
+        _this.logger.info(`start server error:${err}`);
+      })
   }
 }
 export default ESLServer;

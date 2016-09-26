@@ -1,12 +1,19 @@
 /**
  * Created by linyong on 9/21/16.
+ * @flow
  */
 import cluster from 'cluster';
 import os from 'os';
 
 
 class Runner {
-  constructor(servers) {
+  cluster:any;
+  numCPUs:number;
+  workers:any;
+  count:number;
+  servers:any;
+
+  constructor(servers:any) {
     this.cluster = cluster;
     this.numCPUs = os.cpus().length;
     this.workers = {};
@@ -106,7 +113,7 @@ class Runner {
       process.on('uncaughtException', function (err) {
         console.error(' 子进程-> uncaughtException:', err);
       });
-      _this.servers.map( item => {
+      _this.servers.map(item => {
         item.run();
       })
 

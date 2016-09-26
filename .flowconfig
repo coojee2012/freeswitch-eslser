@@ -3,7 +3,6 @@ build
 [include]
 
 [libs]
-node_modules/iflow-lodash/index.js.flow
 src/interfaces/
 src/decls/
 [options]

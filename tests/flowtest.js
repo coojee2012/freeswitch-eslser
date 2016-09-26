@@ -1,7 +1,6 @@
-/* @flow */
 /**
+ * @flow
  * Created by linyong on 9/23/16.
- *  @flow
  */
 "use strict";
 require('babel-core/register');
